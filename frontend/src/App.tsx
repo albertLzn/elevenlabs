@@ -24,7 +24,7 @@ export function App() {
       element: <Cockpit />,
     },
     {
-      path: '/spaceship-admin-broken',
+      path: '/spaceship-admin',
       element: <SpaceshipAdmin />,
     },
     {
