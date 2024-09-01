@@ -1,0 +1,58 @@
+version: "3.5"
+
+services:
+  init-remove-gitkeep:
+    image: busybox
+    volumes:
+      - ./mysql:/var/lib/mysql
+      - ./remove_gitkeep.sh:/remove_gitkeep.sh
+    entrypoint: ["/bin/sh", "-c", "/remove_gitkeep.sh"]
+    restart: "no"
+
+  db-eleven-test:
+    image: mysql:8.2.0
+    restart: always
+    container_name: db-eleven-test
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=eleven11
+      - MYSQL_USER=eleven
+      - MYSQL_PASSWORD=eleven11
+      - MYSQL_DATABASE=eleven
+    volumes:
+      - ./mysql:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD-SHELL", "mysqladmin ping -h localhost -u eleven --password=eleven11 || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      - init-remove-gitkeep
+
+  server-eleven-test:
+    depends_on:
+      db-eleven-test:
+        condition: service_healthy
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
+    environment:
+      DB_HOST: db-eleven-test
+      DB_USER: eleven
+      DB_PASSWORD: eleven11
+      DB_NAME: eleven
+    volumes:
+      - ./backend:/code/
+
+  front-eleven-test:
+    restart: always
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    volumes:
+      - ./frontend/:/code/
+    ports:
+      - "3000:3000"
