@@ -21,14 +21,12 @@ function mapAstronautList(astronautList?: Astronaut[] | null) {
     return [];
   }
 
-  return astronautList.map(
-    ({ id, firstname, lastname, originPlanet }: Astronaut) => ({
-      id,
-      firstname,
-      lastname,
-      planetOfOrigin: originPlanet.name,
-    }),
-  );
+  return astronautList.map(({ id, firstname, lastname, originPlanet }: Astronaut) => ({
+    id,
+    firstname,
+    lastname,
+    planetOfOrigin: originPlanet?.name || 'Unknown',
+  }));
 }
 
 type AstronautListContainerProps = {
@@ -72,7 +70,7 @@ export function AstronautListContainer({
 
   return (
     <>
-      {!isLoading ? (
+      {isLoading ? (
         <HUDWindowLoader
           label="astronaut in the spaceship"
           className={styles.astronautlistcontainer}

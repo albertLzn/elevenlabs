@@ -80,7 +80,7 @@ export function HUDAstronautList({
               onDelete({ id, firstname, lastname, planetOfOrigin });
 
             return (
-              <HUDListItem hasBorder={!isLastElement}>
+              <HUDListItem key={id} hasBorder={!isLastElement}>
                 <Flexbox
                   justifyContent="space-between"
                   className={styles.astronautlistContent}
