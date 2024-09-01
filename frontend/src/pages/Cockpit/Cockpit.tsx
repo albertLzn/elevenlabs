@@ -46,8 +46,10 @@ export function Cockpit() {
   const { setPlanetList } = usePlanetList();
 
   useEffect(() => {
-    setPlanetList({ isLoading, planetList: data, error });
-  }, [data, error, isLoading, setPlanetList]);
+    if (data !== undefined) {
+      setPlanetList({ isLoading, planetList: data, error });
+    }
+  }, [data, error, isLoading]);
 
   const { isTraveling } = useIsTraveling();
 
