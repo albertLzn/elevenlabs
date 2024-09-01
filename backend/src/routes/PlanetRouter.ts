@@ -1,12 +1,14 @@
 import express from 'express';
-import PlanetController from '../controllers/PlanetController';
+import { PlanetController } from '../controllers/PlanetController';
 
-const router = express.Router();
+export const setupPlanetRoutes = (planetController: PlanetController) => {
+  const router = express.Router();
 
-router.get('/allPlanets', PlanetController.getAll);
-router.get('/:id', PlanetController.getById);
-router.post('/create', PlanetController.create);
-router.post('/update/:id', PlanetController.update);
-router.post('/delete/:id', PlanetController.delete);
+  router.get('/', planetController.getAll);
+  router.get('/:id', planetController.getById);
+  router.post('/', planetController.create);
+  router.put('/:id', planetController.update);
+  router.delete('/:id', planetController.delete);
 
-export default router;
+  return router;
+};

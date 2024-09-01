@@ -1,11 +1,9 @@
 import Image from './Image';
 
-interface Planet {
+export default interface Planet {
   id: number;
   name: string;
   description: string;
   image: Image;
   isHabitable: boolean;
 }
-
-export default Planet;
