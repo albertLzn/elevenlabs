@@ -17,22 +17,25 @@ import { SpaceTravelProvider } from './contexts/SpaceTravelContext.tsx';
 import { SpaceshipProvider } from './contexts/SpaceshipContext.tsx';
 import { MessageCenterProvider } from './contexts/MessageCenterContext.tsx';
 
+// Constants
+import { RoutePaths } from './constants/paths';
+
 export function App() {
   const router = createBrowserRouter([
     {
-      path: '/',
+      path: RoutePaths.HOME,
       element: <Cockpit />,
     },
     {
-      path: '/spaceship-admin',
+      path: RoutePaths.SPACESHIP_ADMIN,
       element: <SpaceshipAdmin />,
     },
     {
-      path: '/astronaut/create',
+      path: RoutePaths.ASTRONAUT_CREATE,
       element: <CreateOrEditAstronaut />,
     },
     {
-      path: '/astronaut/edit/:astronautId',
+      path: RoutePaths.ASTRONAUT_EDIT,
       element: <CreateOrEditAstronaut />,
     },
   ]);
