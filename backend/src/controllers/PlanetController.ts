@@ -6,7 +6,8 @@ export class PlanetController {
 
   getAll = async (req: Request, res: Response): Promise<void> => {
     try {
-      const planets = await this.planetService.getAll();
+      const filterName = req.query.filterName as string | undefined;
+      const planets = await this.planetService.getAll(filterName);
       res.status(200).json(planets);
     } catch (error) {
       console.error('Error in getAll:', error);

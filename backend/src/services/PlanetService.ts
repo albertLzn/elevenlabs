@@ -2,7 +2,7 @@ import { Knex } from 'knex';
 import Planet from '../entities/Planet';
 
 export interface PlanetService {
-  getAll(): Promise<Planet[]>;
+  getAll(filterName?: string): Promise<Planet[]>;
   getById(id: number): Promise<Planet | null>;
   create(planet: Omit<Planet, 'id'>): Promise<Planet>;
   update(id: number, planet: Partial<Omit<Planet, 'id'>>): Promise<Planet | null>;
@@ -12,20 +12,24 @@ export interface PlanetService {
 export class PlanetServiceImpl implements PlanetService {
   constructor(private db: Knex) {}
 
-  async getAll(): Promise<Planet[]> {
-    const query = `
-      SELECT 
-        planets.*,
-        images.id AS image_id,
-        images.name AS image_name,
-        images.path AS image_path
-      FROM planets
-      LEFT JOIN images ON planets.imageId = images.id
-    `;
-    
-    const [rows] = await this.db.raw(query);
-    return this.mapToPlanets(rows);
+  async getAll(filterName?: string): Promise<Planet[]> {
+    let query = this.db('planets')
+      .select(
+        'planets.*',
+        'images.id as image_id',
+        'images.name as image_name',
+        'images.path as image_path'
+      )
+      .leftJoin('images', 'planets.imageId', 'images.id');
+
+    if (filterName) {
+      query = query.whereRaw('LOWER(planets.name) LIKE ?', [`%${filterName.toLowerCase()}%`]);
+    }
+
+    const planets = await query;
+    return this.mapToPlanets(planets);
   }
+
 
   async getById(id: number): Promise<Planet | null> {
     const query = `
