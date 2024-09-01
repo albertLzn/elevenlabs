@@ -1,9 +1,18 @@
-import Planet from './Planet';
-
 export interface Astronaut {
   id: number;
   firstname: string;
   lastname: string;
-  originPlanetId: number;
-  originPlanet?: Planet;
+  originPlanet: {
+    id: number;
+    name: string;
+    description: string;
+    isHabitable: boolean;
+    image: {
+      id: number;
+      path: string;
+      name: string;
+    }
+  };
 }
+
+

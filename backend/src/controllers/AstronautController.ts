@@ -4,7 +4,6 @@ import { AstronautService } from '../services/AstronautService';
 
 export class AstronautController {
   constructor(private astronautService: AstronautService) {}
-  
 
   getAll = async (req: Request, res: Response): Promise<void> => {
     try {
@@ -68,3 +67,5 @@ export class AstronautController {
     }
   };
 }
+
+
