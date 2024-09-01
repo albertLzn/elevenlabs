@@ -9,6 +9,7 @@ export class PlanetController {
       const planets = await this.planetService.getAll();
       res.status(200).json(planets);
     } catch (error) {
+      console.error('Error in getAll:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
@@ -23,6 +24,7 @@ export class PlanetController {
         res.status(404).json({ error: 'Planet not found' });
       }
     } catch (error) {
+      console.error('Error in getById:', error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };

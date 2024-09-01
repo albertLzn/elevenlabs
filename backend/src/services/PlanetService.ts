@@ -13,40 +13,58 @@ export class PlanetServiceImpl implements PlanetService {
   constructor(private db: Knex) {}
 
   async getAll(): Promise<Planet[]> {
-    return this.db('planets')
-      .select('planets.*', 'images.path as imagePath', 'images.name as imageName')
-      .join('images', 'planets.imageId', 'images.id')
-      .then(rows => rows.map(this.mapToPlanet));
+    const query = `
+      SELECT 
+        planets.*,
+        images.id AS image_id,
+        images.name AS image_name,
+        images.path AS image_path
+      FROM planets
+      LEFT JOIN images ON planets.imageId = images.id
+    `;
+    
+    const [rows] = await this.db.raw(query);
+    return this.mapToPlanets(rows);
   }
 
   async getById(id: number): Promise<Planet | null> {
-    const planet = await this.db('planets')
-      .select('planets.*', 'images.path as imagePath', 'images.name as imageName')
-      .join('images', 'planets.imageId', 'images.id')
-      .where('planets.id', id)
-      .first();
+    const query = `
+      SELECT 
+        planets.*,
+        images.id AS image_id,
+        images.name AS image_name,
+        images.path AS image_path
+      FROM planets
+      LEFT JOIN images ON planets.imageId = images.id
+      WHERE planets.id = :id
+    `;
     
-    return planet ? this.mapToPlanet(planet) : null;
-  }
-
-  async create(planet: Omit<Planet, 'id'>): Promise<Planet> {
-    const { image, ...planetData } = planet;
-    const [imageId] = await this.db('images').insert(image);
-    const [id] = await this.db('planets').insert({ ...planetData, imageId });
-    return this.getById(id) as Promise<Planet>;
-  }
-
-  async update(id: number, planetData: Partial<Omit<Planet, 'id'>>): Promise<Planet | null> {
-    const { image, ...restPlanetData } = planetData;
-    
-    if (image) {
-      const planet = await this.getById(id);
-      if (planet) {
-        await this.db('images').where('id', planet.image.id).update(image);
-      }
+    const [rows] = await this.db.raw(query, { id });
+    if (rows.length === 0) {
+      return null;
     }
+    return this.mapToPlanets(rows)[0];
+  }
 
-    await this.db('planets').where('id', id).update(restPlanetData);
+  async create(planetData: Omit<Planet, 'id'>): Promise<Planet> {
+    const { image, ...planetInfo } = planetData;
+    const [imageId] = await this.db('images').insert(image);
+    const [planetId] = await this.db('planets').insert({ ...planetInfo, imageId });
+    return this.getById(planetId) as Promise<Planet>;
+  }
+  
+  async update(id: number, planetData: Partial<Omit<Planet, 'id'>>): Promise<Planet | null> {
+    const { image, ...planetInfo } = planetData;
+    const existingPlanet = await this.getById(id);
+    if (!existingPlanet) {
+      return null;
+    }
+    if (image) {
+      await this.db('images')
+        .where('id', existingPlanet.image.id)
+        .update(image);
+    }
+    await this.db('planets').where('id', id).update(planetInfo);
     return this.getById(id);
   }
 
@@ -67,5 +85,19 @@ export class PlanetServiceImpl implements PlanetService {
         path: data.imagePath,
       },
     };
+  }
+
+  private mapToPlanets(rows: any[]): Planet[] {
+    return rows.map(row => ({
+      id: row.id,
+      name: row.name,
+      description: row.description,
+      isHabitable: row.isHabitable === 1,
+      image: {
+        id: row.image_id,
+        name: row.image_name,
+        path: row.image_path
+      }
+    }));
   }
 }

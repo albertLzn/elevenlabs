@@ -4,6 +4,6 @@ export default interface Planet {
   id: number;
   name: string;
   description: string;
-  image: Image;
   isHabitable: boolean;
+  image: Image;
 }
