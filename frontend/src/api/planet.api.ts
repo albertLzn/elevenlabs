@@ -21,10 +21,10 @@ export type NoWhere = 'NO_WHERE';
 
 export type GetPlanetListAPIResponse = Planet[];
 
-export function getPlanetListFromAPI<GetPlanetListAPIResponse>(
-  options?: RequestInit,
-): Promise<GetPlanetListAPIResponse> {
-  return fetchApi<GetPlanetListAPIResponse>('/planets', options);
+export function getPlanetListFromAPI(
+  options?: RequestInit
+): Promise<Planet[]> {
+  return fetchApi<Planet[]>('/planets', options);
 }
 
 export async function getPlanetListByNameAPICall(

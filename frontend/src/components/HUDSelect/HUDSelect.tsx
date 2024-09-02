@@ -50,13 +50,13 @@ export const HUDSelect = forwardRef<HTMLSelectElement | null, HUDSelectProps>(
             id={name}
             name={name}
             className={inputClassNames}
-            defaultValue={value}
+            value={value}
             required={required}
             onChange={onChange}
             ref={ref}
           >
             {options.map(({ value: optionValue, label: optionLabel }) => (
-              <option value={optionValue}>{optionLabel}</option>
+              <option key={optionValue} value={optionValue}>{optionLabel}</option>
             ))}
           </select>
           <label className={labelClassNames} htmlFor={name}>
