@@ -1,6 +1,6 @@
 // Libs
+import React, { useCallback, useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-
 // Components
 import { Flexbox } from '../../components/Flexbox';
 import { AstronautForm } from './AstronautForm';
@@ -30,15 +30,13 @@ export function CreateOrEditAstronaut() {
   const navigate = useNavigate();
   const { astronautId } = useParams();
   const handleCreateOrEditCancel = () => navigate('/spaceship-admin');
-  const handleAstronautFormCreate = async (
-    astronaut: CreateUpdateAstronautRequestBody,
-  ) => {
+  
+  const handleAstronautFormCreate = async (astronaut: CreateUpdateAstronautRequestBody) => {
     await createAstronautAPICall(astronaut);
     navigate('/spaceship-admin');
   };
-  const handleAstronautFormEdit = async (
-    astronaut: CreateUpdateAstronautRequestBody,
-  ) => {
+  
+  const handleAstronautFormEdit = async (astronaut: CreateUpdateAstronautRequestBody) => {
     if (!astronautId) {
       throw new Error('Missing astronautId, WRONG URL!');
     }
@@ -47,13 +45,16 @@ export function CreateOrEditAstronaut() {
   };
 
   const mode = astronautId ? 'edit' : 'create';
-  const handleAstronautFormSubmit =
-    mode === 'create' ? handleAstronautFormCreate : handleAstronautFormEdit;
+  const handleAstronautFormSubmit = mode === 'create' ? handleAstronautFormCreate : handleAstronautFormEdit;
 
   const { currentPlanet } = useCurrentPlanet();
-  const { isLoading, data } = useFetch<Astronaut>((options?: RequestInit) =>
-    getOneAstronautFromAPI(astronautId, options),
-  );
+
+  const fetchFunction = useCallback((options?: RequestInit): Promise<Astronaut | undefined> => {
+    return getOneAstronautFromAPI(astronautId, options);
+  }, [astronautId]);
+  
+
+  const { isLoading, data } = mode === 'edit' ? useFetch<Astronaut>(fetchFunction) : { isLoading: false, data: null };
 
   return (
     <Flexbox flexDirection="column" className={styles.createoreditastronaut}>
@@ -70,7 +71,7 @@ export function CreateOrEditAstronaut() {
         />
       )}
       <Flexbox justifyContent="center" alignItems="center">
-        {isLoading ? (
+        {mode === 'edit' && isLoading ? (
           <HUDWindowLoader />
         ) : (
           <AstronautForm

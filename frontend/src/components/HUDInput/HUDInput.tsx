@@ -1,5 +1,5 @@
 // React
-import { forwardRef, InputHTMLAttributes } from 'react';
+import { forwardRef, InputHTMLAttributes, useCallback } from 'react';
 
 // Libs
 import classnames from 'classnames';
@@ -40,7 +40,13 @@ export const HUDInput = forwardRef<HTMLInputElement | null, HUDInputProps>(
       [styles.hudinputBarError]: error !== null,
     });
 
-    console.log('INPUT STATE RELOAD');
+    const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+      if (onChange) {
+        console.log('INPUT STATE RELOAD');
+        onChange(e);
+      }
+    }, [onChange]);
+
 
     return (
       <div className={componentClassNames} style={style}>
@@ -52,7 +58,7 @@ export const HUDInput = forwardRef<HTMLInputElement | null, HUDInputProps>(
           className={inputClassNames}
           placeholder={placeholder}
           value={value}
-          onChange={onChange}
+          onChange={handleChange}
           ref={ref}
           defaultValue={defaultValue}
         />
