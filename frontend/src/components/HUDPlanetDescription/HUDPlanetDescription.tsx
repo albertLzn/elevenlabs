@@ -4,6 +4,8 @@ import { CSSProperties } from 'react';
 // Components
 import { HUDWindow } from '../HUDWindow';
 import { Flexbox } from '../Flexbox';
+import { MiniGame } from '../MiniGame/MiniGame';
+
 
 // SVG
 import IconMaleFemale from '../../assets/icon-male-female.svg?react';
@@ -57,7 +59,11 @@ export function HUDPlanetDescription({
             ) : (
               <div>No life on this planet</div>
             )}
+
+            <MiniGame planetName={name} />
+
           </Flexbox>
+
         </HUDWindow>
       </Flexbox>
     </div>

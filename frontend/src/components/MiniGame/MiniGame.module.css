@@ -1,0 +1,42 @@
+.game {
+    position: relative;
+    margin: 20px auto;
+  }
+  
+  .gameArea {
+    background-color: black;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .player {
+    position: absolute;
+    background-color: blue;
+  }
+  
+  .bullet {
+    position: absolute;
+    background-color: yellow;
+  }
+  
+  .target {
+    position: absolute;
+    background-color: red;
+    object-fit: cover;
+  }
+  
+  .score, .level {
+    color: white;
+    font-size: 18px;
+    margin-bottom: 10px;
+  }
+  
+  .gameOver {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: red;
+    font-size: 24px;
+    font-weight: bold;
+  }
