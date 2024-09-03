@@ -7,6 +7,6 @@
     "esModuleInterop": true,
     "strict": true,
     "baseUrl": "./",
-    "types": ["node", "knex", "cors"],
+    "types": ["node", "knex", "cors", "jest"]
   }
 }
